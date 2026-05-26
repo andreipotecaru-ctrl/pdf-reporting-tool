@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>Data Export & Reporting Tool</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans pb-12">
+
+    <div class="max-w-6xl mx-auto p-6">
+        <header class="mb-6 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-emerald-400">Data Export Tool</h1>
+            </div>
+            <button onclick="toggleSetariVizuale()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm transition-all cursor-pointer flex items-center gap-2">
+                <span>⚙️ REVIEW REPORT SETTINGS BEFORE GENERATING!</span>
+                <span id="sageata-setari">👇</span>
+            </button>
+        </header>
+
+        <div id="corp-setari-vizuale" class="hidden bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-2xl mb-6 space-y-4">
+            <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider">Edit Client Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Full Client Name</label>
+                    <input type="text" id="cfg-nume" value="" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Tax ID / Identification Code</label>
+                    <input type="text" id="cfg-cnp" value="" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Client E-mail</label>
+                    <input type="text" id="cfg-email" value="" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex items-center gap-3">
+                <input type="checkbox" id="cfg-paroleaza" checked class="w-4 h-4 text-emerald-500 bg-slate-950 border-slate-700 rounded focus:ring-0 cursor-pointer">
+                <label for="cfg-paroleaza" class="text-xs font-semibold text-slate-300 cursor-pointer select-none">
+                    🔒 Secure generated PDFs automatically using the last 6 characters of the Tax ID as password
+                </label>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div class="md:col-span-1">
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Company Name (Brand)</label>
+                    <input type="text" id="cfg-companie" value="PLATFORM" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-bold text-red-500 focus:outline-none">
+                </div>
+                <div class="md:col-span-3">
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">Header Introduction Text</label>
+                    <textarea id="cfg-intro" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none">Further to your request regarding the activity carried out on the platform www.example-platform.com, operated by Enterprise Solutions Limited, a company duly incorporated and registered under corporate laws, holding registration number corporate-ID-123456, having VAT number EE987654321, and holding the right to organize online interactive activities granted by the Regulatory Gaming Authority under License no. L-GAMING-99887766, please find below the details of the transactions executed by you on the registered user account:</textarea>
+                </div>
+            </div>
+            <div>
+                <label class="block text-[11px] font-bold text-slate-400 mb-1">Footer Confirmation Text</label>
+                <input type="text" id="cfg-declaratie" value="The Platform hereby confirms that the information provided above is accurate, complete, and in compliance with the website’s terms, internal privacy policies, and applicable regulatory frameworks. Should any additional audit logs be required, requests may be submitted directly to customer care at: support@example.com" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none">
+            </div>
+            <div>
+                <label class="block text-[11px] font-bold text-slate-400 mb-1">Copyright Credits</label>
+                <input type="text" id="cfg-copyright" value="©2026 All rights reserved!" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-400 focus:outline-none">
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 bg-slate-900 p-2 rounded-xl mb-6 border border-slate-800">
+            <button onclick="comutaTab('tab-transactions')" id="btn-tab-transactions" class="flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all bg-emerald-500 text-slate-950 shadow min-w-[150px]">
+                Account Transactions
+            </button>
+            <button onclick="comutaTab('tab-financial')" id="btn-tab-financial" class="flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all text-slate-400 hover:bg-slate-800 min-w-[150px]">
+                Financial Transactions
+            </button>
+            <button onclick="comutaTab('tab-logins')" id="btn-tab-logins" class="flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all text-slate-400 hover:bg-slate-800 min-w-[150px]">
+                Logins History
+            </button>
+            <button onclick="comutaTab('tab-bonus')" id="btn-tab-bonus" class="flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all text-slate-400 hover:bg-slate-800 min-w-[150px]">
+                Bonus History
+            </button>
+            <button onclick="comutaTab('tab-se-history')" id="btn-tab-se-history" class="flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all text-slate-400 hover:bg-slate-800 min-w-[150px]">
+                SE History
+            </button>
+            <button onclick="comutaTab('tab-dep-limit')" id="btn-tab-dep-limit" class="flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all text-slate-400 hover:bg-slate-800 min-w-[150px]">
+                Dep. Limit History
+            </button>
+            <button onclick="comutaTab('tab-communications')" id="btn-tab-communications" class="flex-1 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all text-slate-400 hover:bg-slate-800 min-w-[150px]">
+                Communications
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-900/40 p-4 rounded-xl border border-slate-800 mb-6">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">PDF Page Layout Size</label>
+                <select id="dimensiune-pagina" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none text-slate-200">
+                    <option value="A4">A4 (Standard European)</option>
+                    <option value="Letter">Letter (Standard US)</option>
+                    <option value="Legal">Legal</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Page Orientation</label>
+                <select id="orientare-pagina" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none text-slate-200">
+                    <option value="Peisaj">Landscape Orientation - Recommended</option>
+                    <option value="Portret">Portrait Orientation</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="tab-transactions" class="tab-content block bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-slate-200 mb-1">Data Processing: Account Transactions</h2>
+            <p class="text-slate-400 text-xs mb-4">Extracts and structuralizes required data segments</p>
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="cale-tab1" readonly placeholder="Choose input file..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 outline-none">
+                    <button onclick="deschideExplorator('cale-tab1')" class="bg-blue-600 hover:bg-blue-500 font-bold px-4 rounded-lg text-sm transition-all cursor-pointer">Browse...</button>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-900/80 p-3 rounded-xl border border-slate-800 inline-block">
+                    <input type="checkbox" id="chk-export-luni" class="w-4 h-4 text-emerald-500 bg-slate-950 border-slate-700 rounded focus:ring-0 cursor-pointer">
+                    <label for="chk-export-luni" class="text-xs font-semibold text-slate-300 cursor-pointer select-none">
+                        📅 Split output logs monthly (Generates separate standalone PDF files per month)
+                    </label>
+                </div>
+                <button onclick="lanseazaProcesare('transactions')" id="btn-executa-transactions" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-md cursor-pointer">GENERATE ACCOUNT TRANSACTIONS REPORT</button>
+            </div>
+        </div>
+
+        <div id="tab-financial" class="tab-content hidden bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-slate-200 mb-1">Data Processing: Financial Transactions</h2>
+            <p class="text-slate-400 text-xs mb-4">Filters dataset keeping only target architectural parameters</p>
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="cale-tab2" readonly placeholder="Choose input file..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 outline-none">
+                    <button onclick="deschideExplorator('cale-tab2')" class="bg-blue-600 hover:bg-blue-500 font-bold px-4 rounded-lg text-sm transition-all cursor-pointer">Browse...</button>
+                </div>
+                <button onclick="lanseazaProcesare('financial')" id="btn-executa-financial" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-md cursor-pointer">GENERATE FINANCIAL TRANSACTIONS REPORT</button>
+            </div>
+        </div>
+
+        <div id="tab-logins" class="tab-content hidden bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-slate-200 mb-1">Data Processing: Logins History</h2>
+            <p class="text-slate-400 text-xs mb-4">Parses tracking indexes and drops redundant structures</p>
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="cale-tab3" readonly placeholder="Choose input file..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 outline-none">
+                    <button onclick="deschideExplorator('cale-tab3')" class="bg-blue-600 hover:bg-blue-500 font-bold px-4 rounded-lg text-sm transition-all cursor-pointer">Browse...</button>
+                </div>
+                <button onclick="lanseazaProcesare('logins')" id="btn-executa-logins" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-md cursor-pointer">GENERATE LOGINS HISTORY REPORT</button>
+            </div>
+        </div>
+
+        <div id="tab-bonus" class="tab-content hidden bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-slate-200 mb-1">Data Processing: Bonus History</h2>
+            <p class="text-slate-400 text-xs mb-4">Extracts necessary variables and performs an automated merge over multi-source system tracking logs</p>
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="cale-tab5" readonly placeholder="Select one or multiple source files..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 outline-none">
+                    <button onclick="deschideExploratorMultiplu('cale-tab5')" class="bg-blue-600 hover:bg-blue-500 font-bold px-4 rounded-lg text-sm transition-all cursor-pointer">Browse...</button>
+                </div>
+                <button onclick="lanseazaProcesare('bonus')" id="btn-executa-bonus" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-md cursor-pointer">GENERATE CONSOLIDATED BONUS REPORT</button>
+            </div>
+        </div>
+
+        <div id="tab-se-history" class="tab-content hidden bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-slate-200 mb-1">Data Processing: SE History</h2>
+            <p class="text-slate-400 text-xs mb-4">Parses configuration tables from local audit files (.xlsx / .csv)</p>
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="cale-tab6" readonly placeholder="Choose input file..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 outline-none">
+                    <button onclick="deschideExplorator('cale-tab6')" class="bg-blue-600 hover:bg-blue-500 font-bold px-4 rounded-lg text-sm transition-all cursor-pointer">Browse...</button>
+                </div>
+                <button onclick="lanseazaProcesare('se-history')" id="btn-executa-se-history" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-md cursor-pointer">GENERATE SE HISTORY REPORT</button>
+            </div>
+        </div>
+
+        <div id="tab-dep-limit" class="tab-content hidden bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-slate-200 mb-1">Data Processing: Deposit Limit History</h2>
+            <p class="text-slate-400 text-xs mb-4">Extracts target metrics from local operational history datasets (.xlsx / .csv)</p>
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="cale-tab7" readonly placeholder="Choose input file..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 outline-none">
+                    <button onclick="deschideExplorator('cale-tab7')" class="bg-blue-600 hover:bg-blue-500 font-bold px-4 rounded-lg text-sm transition-all cursor-pointer">Browse...</button>
+                </div>
+                <button onclick="lanseazaProcesare('dep-limit')" id="btn-executa-dep-limit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-md cursor-pointer">GENERATE DEPOSIT LIMIT REPORT</button>
+            </div>
+        </div>
+
+        <div id="tab-communications" class="tab-content hidden bg-slate-900/50 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-slate-200 mb-1">Data Processing: Communications</h2>
+            <p class="text-slate-400 text-xs mb-4">Cleans audit trail dataset keeping dispatch parameters</p>
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <input type="text" id="cale-tab4" readonly placeholder="Choose input file..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-300 outline-none">
+                    <button onclick="deschideExplorator('cale-tab4')" class="bg-blue-600 hover:bg-blue-500 font-bold px-4 rounded-lg text-sm transition-all cursor-pointer">Browse...</button>
+                </div>
+                <button onclick="lanseazaProcesare('communications')" id="btn-executa-communications" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-md cursor-pointer">GENERATE COMMUNICATIONS REPORT</button>
+            </div>
+        </div>
+
+        <div id="zona-status" class="hidden mt-6 bg-slate-900 border-l-4 border-amber-500 p-4 rounded-r-lg">
+            <p id="text-status" class="text-sm text-slate-300 font-mono">Initializing execution pipeline...</p>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
